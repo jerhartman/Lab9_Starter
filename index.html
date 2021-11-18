@@ -6,6 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lab 9</title>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "4f944b22bf0f4f61b23fba5dbb5f5536"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
 
   <style>
     button {
@@ -86,8 +93,18 @@
       <button>Trigger a Global Error</button>
     </section>
   </main>
-
+                        
   <script>
+
+    class DivideByZeroError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = 'DivideByZeroError';
+      }
+    }
+
+    //TrackJS.track("testing")    
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +112,131 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      // output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        let calculation = eval(`${firstNum} ${operator} ${secondNum}`);
+        if (calculation == 'Infinity') {
+          throw DivideByZeroError('divided by zero!!');
+        }
+        output.innerHTML = calculation;
+      } catch (error) {
+        if (error instanceof SyntaxError) {
+          console.log('dumb user smh');
+          output.innerHTML = 'please only enter numbers';
+        }
+        // else if(error instanceof DivideByZeroError) {
+        //   output.innerHTML = 'do not divide by zero!!';
+        // }
+        else {
+          output.innerHTML = 'do not divide by zero!!'
+          console.log('user is trying to blow us up!');
+        }
+
+      } 
+      finally {
+
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    let log = errorBtns[0];
+    log.addEventListener('click', function() {
+      console.log('console log demo');
+    });
+
+    let error = errorBtns[1];
+    error.addEventListener('click', function() {
+      console.error('console error demo');
+    });
+
+    let count = errorBtns[2];
+    count.addEventListener('click', function() {
+      console.count('console count');
+    });
+
+    let warn = errorBtns[3];
+    warn.addEventListener('click', function() {
+      console.warn('console warn demo');
+    });
+
+    let assert = errorBtns[4];
+    const a = 2
+    const b = 2;
+    reason = 'a is expected to be equal to b';
+    assert.addEventListener('click', function() {
+      console.assert(a > b, {a, b, reason});
+    });
+
+    let clear = errorBtns[5];
+    clear.addEventListener('click', function() {
+      console.clear();
+    });
+
+    let dir = errorBtns[6];
+    dir.addEventListener('click', function() {
+      console.dir(document.head);
+    });
+
+    let dirxml = errorBtns[7];
+    dirxml.addEventListener('click', function() {
+      console.dirxml(document);
+    });
+
+    const groupLabel = 'this is a test of console.group';
+    let groupStart = errorBtns[8];
+    groupStart.addEventListener('click', function() {
+      console.group(groupLabel);
+    });
+
+    let groupEnd = errorBtns[9];
+    groupEnd.addEventListener('click', function() {
+      console.groupEnd(groupLabel);
+    });
+
+    const arr = [
+      {
+        class: 'CSE 101',
+        professor: 'Jones',
+      },
+      {
+        class: 'CSE 110',
+        professor: 'Powell',
+      }
+    ]
+    let table = errorBtns[10];
+    table.addEventListener('click', function() {
+      console.table(arr);
+    });
+
+    let timerLabel = 'demo of console.time';
+    let setTimer = errorBtns[11];
+    setTimer.addEventListener('click', function() {
+      console.time(timerLabel);
+    });
+
+    let endTimer = errorBtns[12];
+    endTimer.addEventListener('click', function() {
+      console.timeEnd(timerLabel);
+    });
+
+    let trace = errorBtns[13];
+    trace.addEventListener('click', function() {
+      const func = function() {
+        console.trace();
+      }
+      func();
+    });
+
+    let globalError = errorBtns[14];
+    globalError.addEventListener('click', function() {
+      const dontChange = 'dont change me';
+      dontChange = 'change!';
+    });
+
   </script>
 </body>
 
