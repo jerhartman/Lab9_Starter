@@ -103,7 +103,13 @@
       }
     }
 
-    //TrackJS.track("testing")    
+    TrackJS.track("testing")
+    if (window.onerror) {
+      var errorHandler = function(message) { 
+        console.log(`error with message: ${message}`);
+      }
+      window.onerror = errorHandler;
+    }
 
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
@@ -112,11 +118,15 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
+      const regExp = /[a-zA-Z]/g;
       // output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
       try {
         let calculation = eval(`${firstNum} ${operator} ${secondNum}`);
         if (calculation == 'Infinity') {
           throw DivideByZeroError('divided by zero!!');
+        }
+        else if (regExp.test(firstNum) || regExp.test(secondNum)) {
+          throw SyntaxError('input contains letters');
         }
         output.innerHTML = calculation;
       } catch (error) {
